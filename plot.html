@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Plot Details</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #fff;
+    padding: 24px 32px;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 0.5px;
+  }
+
+  .header p {
+    margin: 6px 0 0;
+    opacity: 0.9;
+  }
+
+  .content {
+    padding: 32px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+  }
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 8px;
+  }
+
+  .label {
+    color: #666;
+    font-weight: 500;
+  }
+
+  .value {
+    font-weight: 600;
+    color: #222;
+  }
+
+  .status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  .available {
+    background: #e6f6ec;
+    color: #1c7c3d;
+  }
+
+  .sold {
+    background: #fdecea;
+    color: #b42318;
+  }
+
+  .footer {
+    padding: 20px 32px;
+    background: #fafafa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .back {
+    text-decoration: none;
+    color: #2a5298;
+    font-weight: 600;
+  }
+
+  .error {
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .error h2 {
+    color: #b42318;
+  }
+
+  @media (max-width: 700px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container" id="app">
+  <div class="header">
+    <h1 id="plotTitle">Loading…</h1>
+    <p id="layoutName"></p>
+  </div>
+
+  <div class="content">
+    <div class="grid" id="details"></div>
+    <div id="statusBadge"></div>
+  </div>
+
+  <div class="footer">
+    <span id="note"></span>
+    <a class="back" href="javascript:window.close()">Close</a>
+  </div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const plotId = params.get("plot");
+
+fetch("plots.json")
+  .then(res => res.json())
+  .then(data => {
+    if (!plotId || !data.plots || !data.plots[plotId]) {
+      showError("Plot not found");
+      return;
+    }
+
+    const plot = data.plots[plotId];
+    document.getElementById("plotTitle").innerText = "Plot " + plotId;
+    document.getElementById("layoutName").innerText = data.layout?.name || "";
+
+    const fields = [
+      ["Block", plot.block],
+      ["Area", plot.area],
+      ["Dimensions", plot.dimensions],
+      ["Facing", plot.facing || "—"],
+      ["Price", plot.price],
+      ["Owner", plot.owner || "—"]
+    ];
+
+    const details = document.getElementById("details");
+    details.innerHTML = "";
+
+    fields.forEach(([label, value]) => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `<span class="label">${label}</span><span class="value">${value}</span>`;
+      details.appendChild(div);
+    });
+
+    const status = plot.status || "Unknown";
+    const badge = document.getElementById("statusBadge");
+    badge.innerHTML = `<span class="status ${status.toLowerCase()}">${status}</span>`;
+
+    document.getElementById("note").innerText = plot.note || "";
+  })
+  .catch(() => showError("Unable to load plot data"));
+
+function showError(msg) {
+  document.body.innerHTML = `
+    <div class="error">
+      <h2>${msg}</h2>
+      <p>Please check the link or contact the administrator.</p>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>

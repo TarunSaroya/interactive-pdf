@@ -1,0 +1,83 @@
+{
+  "layout": {
+    "name": "Balaji Vihar",
+    "unit": "feet",
+    "page_size": "A4",
+    "origin": "bottom-left"
+  },
+
+  "blocks": ["A", "B", "C", "D"],
+
+  "plots": {
+    "A21": {
+      "block": "A",
+      "rect": [68, 285, 106, 213],
+      "area": "974 sq.ft",
+      "dimensions": "25 x 45 ft",
+      "price": "₹35,00,000",
+      "status": "Available",
+      "owner": "-",
+      "note": "Irregular width approx 50'",
+      "url": "https://www.hackerrank.com/dashboard"
+    },
+    "A2": {
+      "block": "A",
+      "rect": [117, 281, 150, 215],
+      "area": "1050 sq.ft",
+      "dimensions": "25 x 45 ft",
+      "price": "₹38,00,000",
+      "status": "Sold",
+      "owner": "Mr. Sharma",
+      "note": "Irregular width approx 45'",
+      "url": "https://www.hackerrank.com/dashboard"
+
+    },
+
+    "B20": {
+      "block": "B",
+      "rect": [114, 363, 151, 295],
+      "area": "1209 sq.ft",
+      "dimensions": "25 x 45 ft",
+      "price": "₹42,00,000",
+      "status": "Sold",
+      "owner": "Mr. Jain",
+      "note": "Irregular width approx 55'",
+      "url": "https://www.hackerrank.com/dashboard"
+    },
+    "B21": {
+      "block": "B",
+      "rect": [71, 363, 104, 295],
+      "area": "1070 sq.ft",
+      "dimensions": "25 x 45 ft",
+      "price": "₹39,00,000",
+      "status": "Available",
+      "owner": "-",
+      "note": "Irregular width approx 45'",
+      "url": "https://www.hackerrank.com/dashboard"
+    },
+
+    "C20": {
+      "block": "C",
+      "rect": [71, 484, 105, 431],
+      "area": "1333 sq.ft",
+      "dimensions": "25 x 40 ft",
+      "price": "₹48,00,000",
+      "status": "Available",
+      "owner": "-",
+      "note": "Irregular width approx 54'",
+      "url": "https://www.hackerrank.com/dashboard"
+    },
+
+    "D20": {
+      "block": "D",
+      "rect": [68, 560, 106, 498],
+      "area": "1400 sq.ft",
+      "dimensions": "25 x 40 ft",
+      "price": "₹52,00,000",
+      "status": "Available",
+      "owner": "-",
+      "note": "Irregular width approx 50'",
+      "url": "https://www.hackerrank.com/dashboard"
+    }
+  }
+}
