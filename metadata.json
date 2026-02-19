@@ -1,0 +1,5 @@
+{
+  "name": "Balaji Vihar Property Plotting",
+  "description": "Interactive property plotting and management system for Balaji Vihar, Bundi.",
+  "requestFramePermissions": ["geolocation"]
+}
