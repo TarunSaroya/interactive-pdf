@@ -10,15 +10,14 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     background: #f4f6f8;
     margin: 0;
-    padding: 0;
   }
 
   .container {
-    max-width: 900px;
+    max-width: 950px;
     margin: 40px auto;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
     overflow: hidden;
   }
 
@@ -26,17 +25,35 @@
     background: linear-gradient(135deg, #1e3c72, #2a5298);
     color: #fff;
     padding: 24px 32px;
+    position: relative;
   }
 
   .header h1 {
     margin: 0;
     font-size: 28px;
-    letter-spacing: 0.5px;
   }
 
   .header p {
     margin: 6px 0 0;
     opacity: 0.9;
+  }
+
+  .admin-btn {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.2s;
+  }
+
+  .admin-btn:hover {
+    background: rgba(255,255,255,0.3);
   }
 
   .content {
@@ -72,16 +89,23 @@
     border-radius: 20px;
     font-size: 13px;
     font-weight: 600;
-    margin-top: 8px;
+    margin-top: 15px;
   }
 
-  .available {
-    background: #e6f6ec;
-    color: #1c7c3d;
+  .available { background: #e6f6ec; color: #1c7c3d; }
+  .sold { background: #fdecea; color: #b42318; }
+
+  .admin-section {
+    margin-top: 35px;
+    padding: 20px;
+    border-radius: 10px;
+    background: #fff5f5;
+    border: 1px solid #f5c2c7;
+    display: none;
   }
 
-  .sold {
-    background: #fdecea;
+  .admin-section h3 {
+    margin-top: 0;
     color: #b42318;
   }
 
@@ -90,7 +114,6 @@
     background: #fafafa;
     display: flex;
     justify-content: space-between;
-    align-items: center;
   }
 
   .back {
@@ -99,39 +122,81 @@
     font-weight: 600;
   }
 
-  .error {
-    text-align: center;
-    padding: 80px 20px;
+  /* Modal */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
   }
 
-  .error h2 {
-    color: #b42318;
+  .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+
+  .modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin: 15px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
+  .modal-content button {
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: none;
+    background: #2a5298;
+    color: white;
+    cursor: pointer;
   }
 
   @media (max-width: 700px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
+    .grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 
 <body>
 
-<div class="container" id="app">
+<div class="container">
   <div class="header">
     <h1 id="plotTitle">Loading…</h1>
     <p id="layoutName"></p>
+    <button class="admin-btn" onclick="openModal()">Admin</button>
   </div>
 
   <div class="content">
     <div class="grid" id="details"></div>
     <div id="statusBadge"></div>
+
+    <div class="admin-section" id="adminSection">
+      <h3>Confidential Information</h3>
+      <p><strong>Exact Deal Price:</strong> ₹ 21,75,000</p>
+      <p><strong>Owner Aadhaar:</strong> XXXXXXXX</p>
+      <p><strong>Internal Notes:</strong> Payment pending verification</p>
+    </div>
   </div>
 
   <div class="footer">
     <span id="note"></span>
     <a class="back" href="javascript:window.close()">Close</a>
+  </div>
+</div>
+
+<!-- Password Modal -->
+<div class="modal" id="passwordModal">
+  <div class="modal-content">
+    <h3>Admin Login</h3>
+    <input type="password" id="adminPassword" placeholder="Enter password">
+    <button onclick="checkPassword()">Unlock</button>
   </div>
 </div>
 
@@ -143,7 +208,7 @@ fetch("plots.json")
   .then(res => res.json())
   .then(data => {
     if (!plotId || !data.plots || !data.plots[plotId]) {
-      showError("Plot not found");
+      document.body.innerHTML = "<h2 style='text-align:center;padding:80px;'>Plot not found</h2>";
       return;
     }
 
@@ -161,8 +226,6 @@ fetch("plots.json")
     ];
 
     const details = document.getElementById("details");
-    details.innerHTML = "";
-
     fields.forEach(([label, value]) => {
       const div = document.createElement("div");
       div.className = "item";
@@ -171,20 +234,26 @@ fetch("plots.json")
     });
 
     const status = plot.status || "Unknown";
-    const badge = document.getElementById("statusBadge");
-    badge.innerHTML = `<span class="status ${status.toLowerCase()}">${status}</span>`;
+    document.getElementById("statusBadge").innerHTML =
+      `<span class="status ${status.toLowerCase()}">${status}</span>`;
 
     document.getElementById("note").innerText = plot.note || "";
-  })
-  .catch(() => showError("Unable to load plot data"));
+  });
 
-function showError(msg) {
-  document.body.innerHTML = `
-    <div class="error">
-      <h2>${msg}</h2>
-      <p>Please check the link or contact the administrator.</p>
-    </div>
-  `;
+function openModal() {
+  document.getElementById("passwordModal").style.display = "flex";
+}
+
+function checkPassword() {
+  const input = document.getElementById("adminPassword").value;
+  const encoded = btoa(input);
+
+  if (encoded === "MTIzNA==") { // password = 1234
+    document.getElementById("adminSection").style.display = "block";
+    document.getElementById("passwordModal").style.display = "none";
+  } else {
+    alert("Incorrect Password");
+  }
 }
 </script>
 
