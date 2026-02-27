@@ -4,7 +4,7 @@
     "unit": "feet",
     "page_size": "A4",
     "origin": "bottom-left",
-    "map_center": [25.359823, 75.679593]
+    "map_center": [25.4378815, 75.6865576]
   },
 
   "blocks": ["A", "B", "C", "D"],
