@@ -118,6 +118,56 @@ button:hover{background:rgba(255,255,255,0.2);cursor:pointer;}
   margin-top:10px;
 }
 
+.report-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  padding: 10px 15px;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.report-panel {
+  position: fixed;
+  top: 0;
+  left: -400px;
+  width: 350px;
+  height: 100%;
+  background: white;
+  box-shadow: 2px 0 20px rgba(0,0,0,0.2);
+  transition: 0.3s ease;
+  z-index: 2000;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.report-panel.active {
+  left: 0;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.report-header button {
+  border: none;
+  background: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.report-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
 .available{background:#22c55e33;color:#22c55e;}
 .sold{background:#ef444433;color:#ef4444;}
 .reserved{background:#f59e0b33;color:#f59e0b;}
@@ -125,6 +175,23 @@ button:hover{background:rgba(255,255,255,0.2);cursor:pointer;}
 </head>
 
 <body>
+
+<button id="reportBtn" class="report-btn">📊 Report</button>
+
+<div id="reportPanel" class="report-panel">
+  <div class="report-header">
+    <h2>Project Report</h2>
+    <button id="closeReport">✕</button>
+  </div>
+
+  <div id="reportContent"></div>
+
+  <div class="report-actions">
+    <button onclick="exportCSV()">Export CSV</button>
+    <button onclick="window.print()">Print</button>
+  </div>
+</div>
+
 
 <div id="map"></div>
 
@@ -152,6 +219,78 @@ button:hover{background:rgba(255,255,255,0.2);cursor:pointer;}
 let map;
 let plotLayers = {};
 let allPlots = {};
+
+const reportBtn = document.getElementById("reportBtn");
+const reportPanel = document.getElementById("reportPanel");
+const closeReport = document.getElementById("closeReport");
+const reportContent = document.getElementById("reportContent");
+
+reportBtn.onclick = () => {
+  generateReport();
+  reportPanel.classList.add("active");
+};
+
+closeReport.onclick = () => {
+  reportPanel.classList.remove("active");
+};
+
+function generateReport() {
+  let total = 0;
+  let sold = 0;
+  let available = 0;
+  let reserved = 0;
+  let totalValue = 0;
+  let totalArea = 0;
+
+  const blockStats = {};
+
+  Object.values(layoutData.plots).forEach(plot => {
+    total++;
+
+    const status = plot.status.toLowerCase();
+    if (status === "sold") sold++;
+    else if (status === "available") available++;
+    else if (status === "reserved") reserved++;
+
+    const price = parseInt(plot.price.replace(/[^0-9]/g, ""));
+    totalValue += price;
+
+    const area = parseInt(plot.area);
+    totalArea += area;
+
+    if (!blockStats[plot.block]) {
+      blockStats[plot.block] = { total: 0, sold: 0 };
+    }
+
+    blockStats[plot.block].total++;
+    if (status === "sold") blockStats[plot.block].sold++;
+  });
+
+  let blockHTML = "";
+  for (let block in blockStats) {
+    blockHTML += `
+      <p><strong>Block ${block}</strong><br>
+      Total: ${blockStats[block].total} <br>
+      Sold: ${blockStats[block].sold}</p>
+    `;
+  }
+
+  reportContent.innerHTML = `
+    <h3>Overview</h3>
+    <p>Total Plots: ${total}</p>
+    <p>Available: ${available}</p>
+    <p>Sold: ${sold}</p>
+    <p>Reserved: ${reserved}</p>
+
+    <h3>Financial</h3>
+    <p>Total Value: ₹${totalValue.toLocaleString()}</p>
+    <p>Total Area: ${totalArea} sq.ft</p>
+
+    <h3>Block-wise</h3>
+    ${blockHTML}
+  `;
+}
+
 
 fetch("plots.json")
 .then(res=>res.json())
@@ -229,6 +368,22 @@ function closePanel(){
   const panel = document.getElementById("panel");
   panel.classList.remove("open");
   panel.classList.remove("light-mode");
+}
+
+function exportCSV() {
+  let csv = "Plot,Block,Status,Area,Price\n";
+
+  Object.entries(layoutData.plots).forEach(([id, plot]) => {
+    csv += `${id},${plot.block},${plot.status},${plot.area},${plot.price}\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "plot-report.csv";
+  a.click();
 }
 
 
