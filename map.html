@@ -2,56 +2,85 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Property Layout Map</title>
+<title>Balaji Vihar Map</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-  body { margin: 0; font-family: Arial, sans-serif; }
-  #map { width: 100vw; height: 100vh; }
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;background:#0f172a;color:white;}
+#map{height:100vh;width:100vw;}
 
-  .top-panel {
-    position: absolute;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    padding: 10px 20px;
-    border-radius: 30px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    z-index: 1000;
-    display: flex;
-    gap: 10px;
-  }
+.glass{
+  backdrop-filter:blur(20px);
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
 
-  .btn {
-    border: none;
-    padding: 6px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    background: #2a5298;
-    color: white;
-    font-size: 13px;
-  }
+.topbar{
+  position:absolute;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:10px;
+  padding:10px 20px;
+  z-index:1000;
+}
 
-  .legend {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    z-index: 1000;
-  }
+button,select,input{
+  background:rgba(255,255,255,0.1);
+  border:none;
+  color:white;
+  padding:8px 14px;
+  border-radius:20px;
+  font-size:13px;
+}
 
-  .legend div {
-    margin-bottom: 6px;
-  }
+button:hover{background:rgba(255,255,255,0.2);cursor:pointer;}
+
+.search-box{
+  padding-left:15px;
+}
+
+.sidepanel{
+  position:absolute;
+  top:0;
+  right:-400px;
+  width:380px;
+  height:100%;
+  padding:30px;
+  transition:0.4s ease;
+  z-index:1001;
+}
+
+.sidepanel.open{
+  right:0;
+}
+
+.close-btn{
+  float:right;
+  cursor:pointer;
+  opacity:0.7;
+}
+
+.close-btn:hover{opacity:1;}
+
+.status-badge{
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+  display:inline-block;
+  margin-top:10px;
+}
+
+.available{background:#22c55e33;color:#22c55e;}
+.sold{background:#ef444433;color:#ef4444;}
+.reserved{background:#f59e0b33;color:#f59e0b;}
 </style>
 </head>
 
@@ -59,113 +88,125 @@
 
 <div id="map"></div>
 
-<div class="top-panel">
-  <button class="btn" onclick="zoomToProperty()">Zoom to Property</button>
+<div class="topbar glass">
+  <select id="filter">
+    <option value="all">All</option>
+    <option value="available">Available</option>
+    <option value="sold">Sold</option>
+    <option value="reserved">Reserved</option>
+  </select>
+
+  <input type="text" id="search" placeholder="Search Plot..." class="search-box">
+  <button onclick="searchPlot()">Search</button>
 </div>
 
-<div class="legend">
-  <div><span style="color:green;">■</span> Available</div>
-  <div><span style="color:red;">■</span> Sold</div>
+<div class="sidepanel glass" id="panel">
+  <span class="close-btn" onclick="closePanel()">✕</span>
+  <div id="panelContent"></div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
 
-const center = [25.359823, 75.679593];
-const map = L.map('map').setView(center, 17);
+let map;
+let plotLayers = {};
+let allPlots = {};
 
-L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  { attribution: '© OpenStreetMap contributors' }
-).addTo(map);
+fetch("plots.json")
+.then(res=>res.json())
+.then(data=>{
 
-/* =========================
-   MAIN BOUNDARY
-========================= */
-const boundaryCoords = [
-  [25.360281, 75.679093],
-  [25.359890, 75.680109],
-  [25.359424, 75.679756],
-  [25.359764, 75.678869]
-];
+  map = L.map('map').setView(data.layout.map_center,18);
 
-const boundary = L.polygon(boundaryCoords, {
-  color: '#d32f2f',
-  weight: 3,
-  fillOpacity: 0
-}).addTo(map);
-
-map.fitBounds(boundary.getBounds());
-
-function zoomToProperty() {
-  map.fitBounds(boundary.getBounds());
-}
-
-/* =========================
-   INDIVIDUAL PLOTS
-========================= */
-
-/*
-  Example plots inside boundary
-  You must adjust coordinates
-*/
-
-const plots = [
-  {
-    id: "A1",
-    status: "available",
-    coords: [
-      [25.36020, 75.67920],
-      [25.36010, 75.67940],
-      [25.36000, 75.67935],
-      [25.36010, 75.67915]
-    ]
-  },
-  {
-    id: "A2",
-    status: "sold",
-    coords: [
-      [25.36010, 75.67940],
-      [25.36000, 75.67960],
-      [25.35990, 75.67955],
-      [25.36000, 75.67935]
-    ]
-  }
-];
-
-/* Draw plots */
-plots.forEach(plot => {
-
-  const color = plot.status === "sold" ? "#c62828" : "#2e7d32";
-
-  const polygon = L.polygon(plot.coords, {
-    color: color,
-    weight: 1,
-    fillColor: color,
-    fillOpacity: 0.35
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© OpenStreetMap'
   }).addTo(map);
 
-  /* Hover effect */
-  polygon.on('mouseover', function () {
-    this.setStyle({ fillOpacity: 0.6 });
+  // Boundary
+  L.polygon(data.boundary,{
+    color:'#ef4444',
+    weight:3,
+    fillOpacity:0
+  }).addTo(map);
+
+  map.fitBounds(data.boundary);
+
+  allPlots = data.plots;
+
+  Object.entries(data.plots).forEach(([id,plot])=>{
+
+    const color =
+      plot.status==="sold" ? "#ef4444":
+      plot.status==="reserved" ? "#f59e0b":
+      "#22c55e";
+
+    const polygon = L.polygon(plot.coords,{
+      color:color,
+      fillColor:color,
+      fillOpacity:0.3,
+      weight:2
+    }).addTo(map);
+
+    polygon.on('mouseover',()=>{
+      polygon.setStyle({fillOpacity:0.6});
+    });
+
+    polygon.on('mouseout',()=>{
+      polygon.setStyle({fillOpacity:0.3});
+    });
+
+    polygon.on('click',()=>{
+      openPanel(id,plot);
+    });
+
+    plotLayers[id]=polygon;
   });
 
-  polygon.on('mouseout', function () {
-    this.setStyle({ fillOpacity: 0.35 });
-  });
-
-  /* Click → Open plot page */
-  polygon.on('click', function () {
-    window.open("plot.html?plot=" + plot.id, "_blank");
-  });
-
-  polygon.bindTooltip("Plot " + plot.id, {
-  permanent: false,
-  direction: "top"
 });
 
+function openPanel(id,plot){
+  const panel=document.getElementById("panel");
+  panel.classList.add("open");
 
+  document.getElementById("panelContent").innerHTML=`
+    <h2>Plot ${id}</h2>
+    <span class="status-badge ${plot.status}">${plot.status}</span>
+    <p><strong>Block:</strong> ${plot.block}</p>
+    <p><strong>Area:</strong> ${plot.area}</p>
+    <p><strong>Dimensions:</strong> ${plot.dimensions}</p>
+    <p><strong>Price:</strong> ${plot.price}</p>
+    <p><strong>Owner:</strong> ${plot.owner}</p>
+    <p><strong>Note:</strong> ${plot.note}</p>
+    <button onclick="window.open('plot.html?plot=${id}')">Open Full Details</button>
+  `;
+}
+
+function closePanel(){
+  document.getElementById("panel").classList.remove("open");
+}
+
+document.getElementById("filter").addEventListener("change",function(){
+  const value=this.value;
+
+  Object.entries(allPlots).forEach(([id,plot])=>{
+    if(value==="all"||plot.status===value){
+      plotLayers[id].addTo(map);
+    }else{
+      map.removeLayer(plotLayers[id]);
+    }
+  });
 });
+
+function searchPlot(){
+  const id=document.getElementById("search").value.trim();
+  if(plotLayers[id]){
+    map.fitBounds(plotLayers[id].getBounds());
+    openPanel(id,allPlots[id]);
+  }else{
+    alert("Plot not found");
+  }
+}
 
 </script>
 

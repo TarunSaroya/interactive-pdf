@@ -3,34 +3,55 @@
     "name": "Balaji Vihar",
     "unit": "feet",
     "page_size": "A4",
-    "origin": "bottom-left"
+    "origin": "bottom-left",
+    "map_center": [25.359823, 75.679593]
   },
 
   "blocks": ["A", "B", "C", "D"],
 
+  "boundary": [
+    [25.360281, 75.679093],
+    [25.359890, 75.680109],
+    [25.359424, 75.679756],
+    [25.359764, 75.678869]
+  ],
+
   "plots": {
+
     "A21": {
       "block": "A",
       "rect": [68, 285, 106, 213],
       "area": "974 sq.ft",
       "dimensions": "25 x 45 ft",
       "price": "₹35,00,000",
-      "status": "Available",
+      "status": "available",
       "owner": "-",
       "note": "Irregular width approx 50'",
-      "url": "https://www.hackerrank.com/dashboard"
+      "url": "https://www.hackerrank.com/dashboard",
+      "coords": [
+        [25.36020, 75.67920],
+        [25.36010, 75.67940],
+        [25.36000, 75.67935],
+        [25.36010, 75.67915]
+      ]
     },
+
     "A2": {
       "block": "A",
       "rect": [117, 281, 150, 215],
       "area": "1050 sq.ft",
       "dimensions": "25 x 45 ft",
       "price": "₹38,00,000",
-      "status": "Sold",
+      "status": "sold",
       "owner": "Mr. Sharma",
       "note": "Irregular width approx 45'",
-      "url": "https://www.hackerrank.com/dashboard"
-
+      "url": "https://www.hackerrank.com/dashboard",
+      "coords": [
+        [25.36010, 75.67940],
+        [25.36000, 75.67960],
+        [25.35990, 75.67955],
+        [25.36000, 75.67935]
+      ]
     },
 
     "B20": {
@@ -39,21 +60,34 @@
       "area": "1209 sq.ft",
       "dimensions": "25 x 45 ft",
       "price": "₹42,00,000",
-      "status": "Sold",
+      "status": "sold",
       "owner": "Mr. Jain",
       "note": "Irregular width approx 55'",
-      "url": "https://www.hackerrank.com/dashboard"
+      "url": "https://www.hackerrank.com/dashboard",
+      "coords": [
+        [25.35995, 75.67915],
+        [25.35985, 75.67935],
+        [25.35975, 75.67930],
+        [25.35985, 75.67910]
+      ]
     },
+
     "B21": {
       "block": "B",
       "rect": [71, 363, 104, 295],
       "area": "1070 sq.ft",
       "dimensions": "25 x 45 ft",
       "price": "₹39,00,000",
-      "status": "Available",
+      "status": "available",
       "owner": "-",
       "note": "Irregular width approx 45'",
-      "url": "https://www.hackerrank.com/dashboard"
+      "url": "https://www.hackerrank.com/dashboard",
+      "coords": [
+        [25.36005, 75.67905],
+        [25.35995, 75.67925],
+        [25.35985, 75.67920],
+        [25.35995, 75.67900]
+      ]
     },
 
     "C20": {
@@ -62,10 +96,16 @@
       "area": "1333 sq.ft",
       "dimensions": "25 x 40 ft",
       "price": "₹48,00,000",
-      "status": "Available",
+      "status": "available",
       "owner": "-",
       "note": "Irregular width approx 54'",
-      "url": "https://www.hackerrank.com/dashboard"
+      "url": "https://www.hackerrank.com/dashboard",
+      "coords": [
+        [25.36030, 75.67930],
+        [25.36020, 75.67950],
+        [25.36010, 75.67945],
+        [25.36020, 75.67925]
+      ]
     },
 
     "D20": {
@@ -74,10 +114,17 @@
       "area": "1400 sq.ft",
       "dimensions": "25 x 40 ft",
       "price": "₹52,00,000",
-      "status": "Available",
+      "status": "available",
       "owner": "-",
       "note": "Irregular width approx 50'",
-      "url": "https://www.hackerrank.com/dashboard"
+      "url": "https://www.hackerrank.com/dashboard",
+      "coords": [
+        [25.36040, 75.67920],
+        [25.36030, 75.67940],
+        [25.36020, 75.67935],
+        [25.36030, 75.67915]
+      ]
     }
+
   }
 }
