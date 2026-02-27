@@ -136,7 +136,8 @@ fetch("plots.json")
   map = L.map('map').setView(data.layout.map_center,18);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    attribution:'© OpenStreetMap'
+    attribution:'© OpenStreetMap',
+    maxZoom: 22
   }).addTo(map);
 
   // Boundary
