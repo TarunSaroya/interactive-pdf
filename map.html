@@ -17,7 +17,6 @@ body{
 }
 #map{height:100vh;width:100vw;}
 
-/* ---------------- TOPBAR ---------------- */
 .glass{
   backdrop-filter:blur(20px);
   background:rgba(255,255,255,0.06);
@@ -59,7 +58,6 @@ button:hover{
 #search::placeholder{color:#666;}
 #filter{background:white;color:black;}
 
-/* ---------------- SIDE PANEL ---------------- */
 .sidepanel {
   position:absolute;
   top:0;
@@ -94,7 +92,6 @@ button:hover{
 .sold{background:#ef444433;color:#ef4444;}
 .reserved{background:#f59e0b33;color:#f59e0b;}
 
-/* ---------------- REPORT BUTTON ---------------- */
 .report-btn{
   position:absolute;
   top:20px;
@@ -110,10 +107,9 @@ button:hover{
 }
 
 .report-btn:hover{
-  background:#334155; /* custom hover - no white flash */
+  background:#334155;
 }
 
-/* ---------------- REPORT PANEL ---------------- */
 .report-overlay{
   position:fixed;
   inset:0;
@@ -235,7 +231,6 @@ fetch("plots.json")
     maxZoom: 22
   }).addTo(map);
 
-  // Boundary
   L.polygon(data.boundary,{
     color:'#ef4444',
     weight:3,
@@ -253,7 +248,6 @@ fetch("plots.json")
 };
 
 
-  // Calculate price per sq ft range
 Object.values(allPlots).forEach(plot => {
   const price = parseInt((plot.price || "").replace(/[^0-9]/g,"")) || 0;
   const area = parseInt(plot.area) || 1;
@@ -262,7 +256,7 @@ Object.values(allPlots).forEach(plot => {
   if (rate < priceRange.min) priceRange.min = rate;
   if (rate > priceRange.max) priceRange.max = rate;
 
-  plot._rate = rate; // store for later use
+  plot._rate = rate;
 });
 
   Object.entries(data.plots).forEach(([id,plot])=>{
@@ -296,8 +290,6 @@ Object.values(allPlots).forEach(plot => {
   console.error("JSON not loading:", err);
 });
 
-
-/* ---------- REPORT TOGGLE ---------- */
 reportBtn.onclick = () => {
   generateReport();
   reportPanel.classList.add("active");
@@ -312,7 +304,6 @@ function closeReportPanel(){
   reportOverlay.classList.remove("active");
 }
 
-/* ---------- REPORT GENERATION ---------- */
 function generateReport(){
   let total=0,sold=0,available=0,reserved=0,totalValue=0,totalArea=0;
   const blockStats={};
@@ -358,7 +349,6 @@ function generateReport(){
   `;
 }
 
-/* ---------- CSV EXPORT ---------- */
 function exportCSV(){
   let csv="Plot,Block,Status,Area,Price\n";
   Object.entries(allPlots).forEach(([id,plot])=>{
@@ -373,7 +363,6 @@ function exportCSV(){
   a.click();
 }
 
-/* ---------- SIDE PANEL ---------- */
 function openPanel(id,plot){
   const panel=document.getElementById("panel");
   panel.classList.add("open");
@@ -413,8 +402,6 @@ document.getElementById("filter").addEventListener("change",function(){
 });
 
 
-
-/* ---------- SEARCH FEATURE ---------- */
 function searchPlot(){
   const id=document.getElementById("search").value.trim();
 
@@ -436,7 +423,6 @@ function getPlotColor(plot) {
     return "#22c55e";
   }
 
-  // Heatmap mode
   const rate = plot._rate;
 
   const min = priceRange.min;
@@ -444,7 +430,6 @@ function getPlotColor(plot) {
 
   const percent = (rate - min) / (max - min);
 
-  // Blue → Purple → Red gradient
   const r = Math.floor(255 * percent);
   const g = Math.floor(80 * (1 - percent));
   const b = Math.floor(255 * (1 - percent));
