@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Property Boundary</title>
+<title>Property Layout Map</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link
@@ -11,8 +11,47 @@
 />
 
 <style>
-  body { margin: 0; }
+  body { margin: 0; font-family: Arial, sans-serif; }
   #map { width: 100vw; height: 100vh; }
+
+  .top-panel {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    background: #2a5298;
+    color: white;
+    font-size: 13px;
+  }
+
+  .legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+  }
+
+  .legend div {
+    margin-bottom: 6px;
+  }
 </style>
 </head>
 
@@ -20,47 +59,114 @@
 
 <div id="map"></div>
 
+<div class="top-panel">
+  <button class="btn" onclick="zoomToProperty()">Zoom to Property</button>
+</div>
+
+<div class="legend">
+  <div><span style="color:green;">■</span> Available</div>
+  <div><span style="color:red;">■</span> Sold</div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/* ======================
-   MAP SETUP
-====================== */
-const center = [25.359823, 75.679593];
 
+const center = [25.359823, 75.679593];
 const map = L.map('map').setView(center, 17);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap contributors'
-}).addTo(map);
+L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  { attribution: '© OpenStreetMap contributors' }
+).addTo(map);
 
-/* ======================
-   PROPERTY BOUNDARY
-====================== */
-/*
-  Approximate perimeter points
-  (clockwise, last point = first)
-*/
-const boundary = [
-  [25.360281, 75.679093], // North-West
-  [25.359890, 75.680109], // North-East
-  [25.359424, 75.679756], // South-East
-  [25.359764, 75.678869], // South-West
-  [25.360281, 75.679093]  // Close polygon
+/* =========================
+   MAIN BOUNDARY
+========================= */
+const boundaryCoords = [
+  [25.360281, 75.679093],
+  [25.359890, 75.680109],
+  [25.359424, 75.679756],
+  [25.359764, 75.678869]
 ];
 
-/* ======================
-   DRAW PERIMETER ONLY
-====================== */
-L.polygon(boundary, {
-  color: 'red',
+const boundary = L.polygon(boundaryCoords, {
+  color: '#d32f2f',
   weight: 3,
-  fill: false
+  fillOpacity: 0
 }).addTo(map);
 
-/* Marker for reference */
-L.marker(center)
-  .addTo(map)
-  .bindPopup("Property Location");
+map.fitBounds(boundary.getBounds());
+
+function zoomToProperty() {
+  map.fitBounds(boundary.getBounds());
+}
+
+/* =========================
+   INDIVIDUAL PLOTS
+========================= */
+
+/*
+  Example plots inside boundary
+  You must adjust coordinates
+*/
+
+const plots = [
+  {
+    id: "A1",
+    status: "available",
+    coords: [
+      [25.36020, 75.67920],
+      [25.36010, 75.67940],
+      [25.36000, 75.67935],
+      [25.36010, 75.67915]
+    ]
+  },
+  {
+    id: "A2",
+    status: "sold",
+    coords: [
+      [25.36010, 75.67940],
+      [25.36000, 75.67960],
+      [25.35990, 75.67955],
+      [25.36000, 75.67935]
+    ]
+  }
+];
+
+/* Draw plots */
+plots.forEach(plot => {
+
+  const color = plot.status === "sold" ? "#c62828" : "#2e7d32";
+
+  const polygon = L.polygon(plot.coords, {
+    color: color,
+    weight: 1,
+    fillColor: color,
+    fillOpacity: 0.35
+  }).addTo(map);
+
+  /* Hover effect */
+  polygon.on('mouseover', function () {
+    this.setStyle({ fillOpacity: 0.6 });
+  });
+
+  polygon.on('mouseout', function () {
+    this.setStyle({ fillOpacity: 0.35 });
+  });
+
+  /* Click → Open plot page */
+  polygon.on('click', function () {
+    window.open("plot.html?plot=" + plot.id, "_blank");
+  });
+
+  polygon.bindTooltip("Plot " + plot.id, {
+  permanent: false,
+  direction: "top"
+});
+
+
+});
+
 </script>
 
 </body>
