@@ -58,6 +58,21 @@ button:hover{background:rgba(255,255,255,0.2);cursor:pointer;}
   color: black;
 }
 
+.sidepanel.light-mode {
+  background: white;
+  color: black;
+}
+
+.sidepanel.light-mode .status-badge {
+  color: inherit;
+}
+.sidepanel.light-mode button {
+  background: #111827;
+  color: white;
+}
+
+
+
 .sidepanel.open{
   right:0;
 }
@@ -169,6 +184,8 @@ fetch("plots.json")
 function openPanel(id,plot){
   const panel=document.getElementById("panel");
   panel.classList.add("open");
+  panel.classList.add("light-mode");
+
 
   document.getElementById("panelContent").innerHTML=`
     <h2>Plot ${id}</h2>
@@ -184,8 +201,11 @@ function openPanel(id,plot){
 }
 
 function closePanel(){
-  document.getElementById("panel").classList.remove("open");
+  const panel = document.getElementById("panel");
+  panel.classList.remove("open");
+  panel.classList.remove("light-mode");
 }
+
 
 document.getElementById("filter").addEventListener("change",function(){
   const value=this.value;
