@@ -25,15 +25,15 @@
       "area": "974 sq.ft",
       "dimensions": "25 x 45 ft",
       "price": "₹35,00,000",
-      "status": "available",
+      "status": "Available",
       "owner": "-",
       "note": "Irregular width approx 50'",
       "url": "https://www.hackerrank.com/dashboard",
       "coords": [
-        [25.360113, 75.679051],
-    [25.360415, 75.679179],
-    [25.360163, 75.679664],
-    [25.359531, 75.680156]
+        [25.438327, 75.686014],
+        [25.438327, 75.686129],
+        [25.438250, 75.686129],
+        [25.438250, 75.686014]
       ]
     },
 
@@ -43,15 +43,15 @@
       "area": "1050 sq.ft",
       "dimensions": "25 x 45 ft",
       "price": "₹38,00,000",
-      "status": "sold",
+      "status": "Sold",
       "owner": "Mr. Sharma",
       "note": "Irregular width approx 45'",
       "url": "https://www.hackerrank.com/dashboard",
       "coords": [
-        [25.36010, 75.67940],
-        [25.36000, 75.67960],
-        [25.35990, 75.67955],
-        [25.36000, 75.67935]
+        [25.438316, 75.686162],
+        [25.438316, 75.686262],
+        [25.438250, 75.686262],
+        [25.438250, 75.686162]
       ]
     },
 
@@ -61,15 +61,15 @@
       "area": "1209 sq.ft",
       "dimensions": "25 x 45 ft",
       "price": "₹42,00,000",
-      "status": "sold",
+      "status": "Sold",
       "owner": "Mr. Jain",
       "note": "Irregular width approx 55'",
       "url": "https://www.hackerrank.com/dashboard",
       "coords": [
-        [25.35995, 75.67915],
-        [25.35985, 75.67935],
-        [25.35975, 75.67930],
-        [25.35985, 75.67910]
+        [25.438537, 75.686152],
+        [25.438537, 75.686262],
+        [25.438450, 75.686262],
+        [25.438450, 75.686152]
       ]
     },
 
@@ -79,15 +79,15 @@
       "area": "1070 sq.ft",
       "dimensions": "25 x 45 ft",
       "price": "₹39,00,000",
-      "status": "available",
+      "status": "Available",
       "owner": "-",
       "note": "Irregular width approx 45'",
       "url": "https://www.hackerrank.com/dashboard",
       "coords": [
-        [25.36005, 75.67905],
-        [25.35995, 75.67925],
-        [25.35985, 75.67920],
-        [25.35995, 75.67900]
+        [25.438537, 75.686022],
+        [25.438537, 75.686122],
+        [25.438450, 75.686122],
+        [25.438450, 75.686022]
       ]
     },
 
@@ -97,15 +97,15 @@
       "area": "1333 sq.ft",
       "dimensions": "25 x 40 ft",
       "price": "₹48,00,000",
-      "status": "available",
+      "status": "Available",
       "owner": "-",
       "note": "Irregular width approx 54'",
       "url": "https://www.hackerrank.com/dashboard",
       "coords": [
-        [25.36030, 75.67930],
-        [25.36020, 75.67950],
-        [25.36010, 75.67945],
-        [25.36020, 75.67925]
+        [25.438873, 75.686022],
+        [25.438873, 75.686129],
+        [25.438775, 75.686129],
+        [25.438775, 75.686022]
       ]
     },
 
@@ -115,17 +115,16 @@
       "area": "1400 sq.ft",
       "dimensions": "25 x 40 ft",
       "price": "₹52,00,000",
-      "status": "available",
+      "status": "Available",
       "owner": "-",
       "note": "Irregular width approx 50'",
       "url": "https://www.hackerrank.com/dashboard",
       "coords": [
-        [25.36040, 75.67920],
-        [25.36030, 75.67940],
-        [25.36020, 75.67935],
-        [25.36030, 75.67915]
+        [25.439083, 75.686014],
+        [25.439083, 75.686129],
+        [25.438975, 75.686129],
+        [25.438975, 75.686014]
       ]
     }
-
-  }
+  }  
 }
